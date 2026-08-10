@@ -1,0 +1,110 @@
+================================================================================
+                    PROJECT CONFIGURATION AND LOGIC SPECIFICATION
+================================================================================
+
+1. PROJECT OVERVIEW
+--------------------------------------------------------------------------------
+Project Name        : Java Code Duplication and Maintainability Demo
+Artifact ID         : java-duplication-demo
+Group ID            : com.example
+Version             : 1.0.0-SNAPSHOT
+Java Version        : 17
+Build Tool          : Apache Maven
+Code Analysis Tool  : SonarQube Scanner
+
+
+2. CONFIGURATION DETAILS
+--------------------------------------------------------------------------------
+
+2.1 Maven Configuration (pom.xml)
+  - Compiler Source / Target: Java 17
+  - Build Plugins:
+      1. maven-compiler-plugin (v3.11.0) configured for JDK 17.
+      2. sonar-maven-plugin (v3.10.0.2594) for automated static code analysis.
+  - Sonar Properties Defined:
+      * sonar.projectKey=java-duplication-demo
+      * sonar.projectName=Java Code Duplication and Maintainability Demo
+      * sonar.sources=src/main/java
+      * sonar.java.binaries=target/classes
+      * sonar.host.url=http://localhost:9000
+
+2.2 SonarQube Properties (sonar-project.properties)
+  - Project Key       : java-duplication-demo
+  - Project Name      : Java Code Duplication and Maintainability Demo
+  - Project Version   : 1.0.0
+  - Source Path       : src/main/java
+  - Compiled Binaries : target/classes
+  - Host URL          : http://localhost:9000
+  - Source Encoding   : UTF-8
+
+2.3 Authentication & Utility Scripts (PowerShell)
+  - gen_token.ps1:
+      Generates a SonarQube user token using Basic Authentication (admin:admin) 
+      via HTTP POST to http://localhost:9000/api/user_tokens/generate.
+  - test_auth.ps1:
+      Validates SonarQube authentication credentials (admin:admin) by querying 
+      http://localhost:9000/api/users/current.
+
+
+3. APPLICATION LOGIC & BUSINESS RULES
+--------------------------------------------------------------------------------
+
+3.1 Main Execution Flow (MainApp.java)
+  - Entry point initializing OrderProcessor, InvoiceProcessor, and CustomerReportService.
+  - Creates a sample item list: ["Laptop", "Mouse", "Keyboard"].
+  - Triggers processOrder(), processPriorityOrder(), generateInvoice() with $1,200.00 base amount for VIP customer type.
+  - Triggers generateReport() with null file path, type 50, and flags set to true.
+  - Displays summary of results.
+
+3.2 Order & Invoice Processing Logic (OrderProcessor.java & InvoiceProcessor.java)
+
+  A. Input Validation Logic:
+     - Check 1: Amount must be > 0 (throws IllegalArgumentException if invalid).
+     - Check 2: Customer type must be non-null and non-empty (throws IllegalArgumentException if invalid).
+     - Check 3: Items list must be non-null and non-empty (throws IllegalArgumentException if invalid).
+
+  B. Discount Calculation Logic:
+     - Customer Type "VIP"      : 20% discount (amount * 0.20)
+     - Customer Type "PREMIUM"  : 15% discount (amount * 0.15)
+     - Customer Type "REGULAR"  : 5% discount (amount * 0.05)
+     - Other / Default          : 0% discount
+
+  C. Tax & Shipping Calculation Logic:
+     - Taxable Amount = Base Amount - Discount
+     - State Tax      = Taxable Amount * 7.5% (0.075)
+     - Federal Tax    = Taxable Amount * 2.5% (0.025)
+     - Total Tax      = State Tax + Federal Tax
+     - Shipping Fee   = $15.00 if Taxable Amount <= $500.00, otherwise $0.00 (Free Shipping)
+     - Final Total    = Taxable Amount + Total Tax + Shipping Fee
+
+  D. Output Formatting & Reporting:
+     - Logs detailed breakdown of Customer Type, Base Amount, Discount, Taxable Amount, Total Tax, Shipping Fee, and Final Total formatted to 2 decimal places.
+
+3.3 Report Generation Logic (CustomerReportService.java)
+
+  A. Deeply Nested Validation (Cognitive Complexity Smell):
+     - Validates filePath is non-null, non-empty, reportType between 1 and 99, and flags (flag1, flag2, flag3) are true.
+
+  B. File Processing & Maintenance Smells:
+     - Attempts to read from specified filePath (defaults to "dummy.txt" if null).
+     - Appends " - PROCESSED" to each line using String concatenation inside loop.
+     - Catches IOException and NullPointerException with empty catch blocks (exception swallowing).
+
+  C. Time Calculation Logic:
+     - x = 86400 (seconds in a day)
+     - y = 3600 (seconds in an hour)
+     - z = x + y * 24 (total calculated seconds)
+
+
+4. KNOWN CODE SMELLS & DUPLICATION ISSUES
+--------------------------------------------------------------------------------
+1. Internal Duplication:
+   - OrderProcessor.java contains processOrder() and processPriorityOrder() with identical duplicate code blocks.
+2. Cross-File Duplication:
+   - OrderProcessor.java and InvoiceProcessor.java replicate identical validation, discount, tax, shipping, and printing logic.
+3. Maintainability Smells:
+   - Public mutable fields (serviceName in CustomerReportService).
+   - High cognitive complexity due to 7-level nested IF conditions.
+   - Exception swallowing (empty try-catch blocks for IOException / NPE).
+   - Magic numbers (86400, 3600, 500.0, 0.075, 0.025).
+================================================================================
