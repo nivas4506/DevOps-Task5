@@ -4,7 +4,7 @@ A Java project designed to demonstrate **code duplication**, **high cognitive co
 
 ---
 
-## 📌 Overview
+## Overview
 
 This repository showcases real-world Java code quality anti-patterns to test and evaluate static code analysis tools (such as SonarQube Scanner). It includes intentional code smells across multiple services:
 
@@ -14,7 +14,7 @@ This repository showcases real-world Java code quality anti-patterns to test and
 
 ---
 
-## 📁 Repository Structure
+## Repository Structure
 
 ```
 DevOps-Task5/
@@ -54,7 +54,7 @@ DevOps-Task5/
 
 ---
 
-## 🚀 Prerequisites
+## Prerequisites
 
 Ensure you have the following installed on your environment:
 
@@ -86,7 +86,7 @@ java -cp target/java-duplication-demo-1.0.0-SNAPSHOT.jar com.example.duplication
 
 ---
 
-## 🔍 SonarQube Integration
+## SonarQube Integration
 
 ### 1. Configure SonarQube Server
 Ensure your local SonarQube instance is active at `http://localhost:9000`.
@@ -116,9 +116,9 @@ sonar-scanner
 
 ---
 
-## 📄 Documentation
+## Documentation
 
 For full details on the configuration files, API endpoints, business logic rules, and calculation formulas, refer to:
-- 📖 [config_and_logic.txt](config_and_logic.txt)
-- ⚙️ [pom.xml](pom.xml)
-- 🔧 [sonar-project.properties](sonar-project.properties)
+- [config_and_logic.txt](config_and_logic.txt)
+- [pom.xml](pom.xml)
+- [sonar-project.properties](sonar-project.properties)
